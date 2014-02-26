@@ -37,8 +37,8 @@ describe('DI module', function () {
                 instanceA,
                 instanceB;
             di.register('testModule', testModule);
-            instanceA = di.getInstance('testModule');
-            instanceB = di.getInstance('testModule');
+            instanceA = di.getNewInstance('testModule');
+            instanceB = di.getNewInstance('testModule');
             expect(instanceA.count).toBeDefined();
             expect(instanceB.count).toBeDefined();
             expect(instanceA.count).not.toEqual(instanceB.count);
@@ -55,7 +55,7 @@ describe('DI module', function () {
                     };
                 };
             di.register('testModule', testModule);
-            instance = di.getInstance('testModule', 'A', 'B', 'C');
+            instance = di.getNewInstance('testModule', 'A', 'B', 'C');
             expect(instance.getConstructorArguments()).toEqual(['A', 'B', 'C']);
 
         });
@@ -72,8 +72,8 @@ describe('DI module', function () {
             instanceA,
             instanceB;
         di.register('testModule', testModule);
-        instanceA = di.getSingleton('testModule');
-        instanceB = di.getSingleton('testModule');
+        instanceA = di.getInstance('testModule');
+        instanceB = di.getInstance('testModule');
         expect(instanceA.count).toBeDefined();
         expect(instanceB.count).toBeDefined();
         expect(instanceA.count).toEqual(instanceB.count);
@@ -96,7 +96,7 @@ describe('DI module', function () {
         di.register('Alma', alma);
         di.register('Korte', korte);
         di.register('Narancs', narancs, ['Alma', 'Korte']);
-        instance = di.getSingleton('Narancs');
+        instance = di.getInstance('Narancs');
         expect(instance.getA).toEqual('Alma');
         expect(instance.getB).toEqual('Korte');
     });
@@ -125,7 +125,7 @@ describe('DI module', function () {
         di.register('Citrom', citrom);
         di.register('Alma', alma, ['Citrom']);
         di.register('Korte', korte);
-        instance = di.getSingleton('Narancs');
+        instance = di.getInstance('Narancs');
         expect(instance.getA.getName).toEqual('Alma');
         expect(instance.getA.getCitrom).toEqual('Citrom');
         expect(instance.getB).toEqual('Korte');
