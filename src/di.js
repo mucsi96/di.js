@@ -71,6 +71,7 @@ var di = (function () {
      * Return a new instance of asked module. It always creates a new instance.
      * @memberOf module:Dependency Injector
      * @param moduleName {string} module name
+     * @param dependency {...*} module dependencies (instances). For manual dependency resolving. Used in tests.
      * @returns {object} module instance
      */
     function getNewInstance(moduleName) {
