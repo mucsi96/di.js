@@ -4,9 +4,7 @@
  * @module Dependency Injector
  */
 var di = (function () {
-    var constructors = {},
-        singletons = {},
-        dependencyContainer = {};
+    var modules = {};
 
     /**
      * Register a new module using its constructor
@@ -16,8 +14,18 @@ var di = (function () {
      * @param dependencies {string[]} dependent module names
      */
     function register(moduleName, moduleConstructor, dependencies) {
-        dependencyContainer[moduleName] = dependencies;
-        constructors[moduleName] = moduleConstructor;
+        modules[moduleName] = {
+            constructor: moduleConstructor,
+            dependencies: dependencies
+        };
+    }
+
+    function getModule(moduleName) {
+        var module = modules[moduleName];
+        if (module) {
+            return module;
+        }
+        throw new Error("Module[" + moduleName + "] is not registered");
     }
 
     /**
@@ -27,7 +35,11 @@ var di = (function () {
      * @returns {function} modules constructor
      */
     function getConstructor(moduleName) {
-        return constructors[moduleName];
+        var constructor = getModule(moduleName).constructor;
+        if (constructor) {
+            return constructor;
+        }
+        throw new Error("Constructor for module[" + moduleName + "] is not registered");
     }
 
     /**
@@ -35,9 +47,7 @@ var di = (function () {
      * @memberOf module:Dependency Injector
      */
     function reset() {
-        constructors = {};
-        singletons = {};
-        dependencyContainer = {};
+        modules = {};
     }
 
     /**
@@ -47,16 +57,17 @@ var di = (function () {
      * @returns {object} module instance
      */
     function getInstance(moduleName) {
-        if (singletons[moduleName]) {
-            return singletons[moduleName];
+        var module = getModule(moduleName);
+        if (module.instance) {
+            return module.instance;
         }
-        singletons[moduleName] = getNewInstance(moduleName);
-        return singletons[moduleName];
+        module.instance = getNewInstance(moduleName);
+        return module.instance;
     }
 
     function resolveDependencies(moduleName) {
         var i,
-            moduleDependencies = dependencyContainer[moduleName],
+            moduleDependencies = getModule(moduleName).dependencies,
             instances = [],
             length = moduleDependencies ? moduleDependencies.length : 0;
 
@@ -85,9 +96,7 @@ var di = (function () {
             }
             return constructor.apply(this, resolveDependencies(moduleName));
         }
-        throw "Object[" + moduleName + "] is not registered";
     }
-
 
     return {
         register: register,

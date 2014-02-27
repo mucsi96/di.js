@@ -22,7 +22,7 @@ describe('DI module', function () {
         di.register('testModule', testModule);
         expect(di.getConstructor('testModule')).toEqual(testModule);
         di.reset();
-        expect(di.getConstructor('testModule')).toBeUndefined();
+        expect(function () {di.getConstructor('testModule')}).toThrowError('Module[testModule] is not registered');
     });
 
     describe('getInstance method', function () {
@@ -45,18 +45,10 @@ describe('DI module', function () {
         });
 
         it('should pass all arguments to constructor', function () {
-            var instance,
-                testModule = function () {
-                    var ca = arguments;
-                    return {
-                        getConstructorArguments: function () {
-                            return ca;
-                        }
-                    };
-                };
+            var testModule = jasmine.createSpy();
             di.register('testModule', testModule);
-            instance = di.getNewInstance('testModule', 'A', 'B', 'C');
-            expect(instance.getConstructorArguments()).toEqual(['A', 'B', 'C']);
+            di.getNewInstance('testModule', 'A', 'B', 'C');
+            expect(testModule).toHaveBeenCalledWith('A', 'B', 'C');
 
         });
     });
