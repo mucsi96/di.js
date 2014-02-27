@@ -45,6 +45,18 @@ module.exports = function(grunt) {
                         destination: 'doc'
                     }
                 }
+            },
+            exec: {
+                remove_docs: {
+                    command: 'del README.md'
+                },
+                generate_docs: {
+                    command: 'jsdox --output . src/di.js',
+                    stdout: true
+                },
+                rename_docs: {
+                    command: 'rename di.md README.md'
+                }
             }
         }
     );
@@ -53,7 +65,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jslint');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-exec');
 
 
-    grunt.registerTask('default', ['jslint','jasmine']);
+    grunt.registerTask('default', ['jslint','jasmine', 'exec']);
 };
