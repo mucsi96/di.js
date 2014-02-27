@@ -77,7 +77,7 @@ var di = (function () {
     /**
      * Return a new instance of asked module. It always creates a new instance.
      * @param {string} moduleName module name
-     * @param {...*} optional dependency module dependencies (instances). For manual dependency resolving. Used in tests.
+     * @param {object...} [dependency] module dependencies (instances). For manual dependency resolving. Used in tests.
      * @returns {object} module instance
      */
     function getNewInstance(moduleName) {

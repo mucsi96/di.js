@@ -44,8 +44,8 @@ Return an instance of asked module. If it is asked first time, it will create ne
 
 *object*,  module instance
 
-di.getNewInstance(moduleName, optional)
----------------------------------------
+di.getNewInstance(moduleName, \[dependency\])
+---------------------------------------------
 Return a new instance of asked module. It always creates a new instance.
 
 
@@ -53,7 +53,7 @@ Return a new instance of asked module. It always creates a new instance.
 
 **moduleName**:  *string*,  module name
 
-**optional**:  *...**,  dependency module dependencies (instances). For manual dependency resolving. Used in tests.
+**[dependency]**:  *object...*,  module dependencies (instances). For manual dependency resolving. Used in tests.
 
 **Returns**
 

@@ -55,5 +55,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jsdoc');
 
 
-    grunt.registerTask('default', ['jslint','jasmine', 'jsdoc']);
+    grunt.registerTask('default', ['jslint','jasmine']);
 };
