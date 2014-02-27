@@ -22,7 +22,7 @@ describe('DI module', function () {
         di.register('testModule', testModule);
         expect(di.getConstructor('testModule')).toEqual(testModule);
         di.reset();
-        expect(function () {di.getConstructor('testModule')}).toThrowError('Module[testModule] is not registered');
+        expect(function () {di.getConstructor('testModule'); }).toThrowError('Module[testModule] is not registered');
     });
 
     describe('getInstance method', function () {

@@ -1,12 +1,16 @@
 module.exports = function(grunt) {
 
+    var src = ['src/**/*.js'],
+        specs = ['specs/**/*.js'],
+        all = src.concat(specs);
+
     grunt.initConfig(
         {
             jasmine: {
                 default: {
-                    src: ['src/**/*.js'],
+                    src: src,
                     options: {
-                        specs: ['specs/**/*.js'],
+                        specs: specs,
                         junit: {
                             path: 'reports',
                             consolidate: true
@@ -17,10 +21,7 @@ module.exports = function(grunt) {
             },
             jslint: {
                 default: {
-                    src: [
-                        'specs/**/*.js',
-                        'src/**/*.js'
-                    ],
+                    src: all,
                     exclude: [],
                     directives: {
                         sloppy: true,
@@ -33,13 +34,13 @@ module.exports = function(grunt) {
             },
             watch: {
                 js: {
-                    files: ['specs/**/*.js','src/**/*.js'],
+                    files: all,
                     tasks: ['jslint', 'jasmine']
                 }
             },
             jsdoc : {
                 dist : {
-                    src: 'src/**/*.js',
+                    src: src,
                     options: {
                         destination: 'doc'
                     }
