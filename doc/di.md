@@ -1,26 +1,26 @@
 Nano Dependency Injector
 ========================
-di.register(modules, modules, dependent)
-----------------------------------------
+di.register(moduleName, moduleConstructor, dependencies)
+--------------------------------------------------------
 Register a new module using its constructor
 
 
 **Parameters**
 
-**modules**:  *oduleName {string*,  name
+**moduleName**:  *string*,  modules name
 
-**modules**:  *oduleConstructor {function*,  constructor
+**moduleConstructor**:  *function*,  modules constructor
 
-**dependent**:  *ependencies {string[]*,  module names
+**dependencies**:  *string[]*,  dependent module names
 
-di.getConstructor(module)
--------------------------
+di.getConstructor(moduleName)
+-----------------------------
 Returns asked registered module constructor
 
 
 **Parameters**
 
-**module**:  *oduleName {string*,  name
+**moduleName**:  *string*,  module name
 
 **Returns**
 
@@ -31,29 +31,29 @@ di.reset()
 Resets own state to initial. Forgets every registered module. Useful for testing.
 
 
-di.getInstance(module)
-----------------------
+di.getInstance(moduleName)
+--------------------------
 Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one
 
 
 **Parameters**
 
-**module**:  *oduleName {string*,  name
+**moduleName**:  *string*,  module name
 
 **Returns**
 
 *object*,  module instance
 
-di.getNewInstance(module, module)
----------------------------------
+di.getNewInstance(moduleName, optional)
+---------------------------------------
 Return a new instance of asked module. It always creates a new instance.
 
 
 **Parameters**
 
-**module**:  *oduleName {string*,  name
+**moduleName**:  *string*,  module name
 
-**module**:  *ependency {...**,  dependencies (instances). For manual dependency resolving. Used in tests.
+**optional**:  *...**,  dependency module dependencies (instances). For manual dependency resolving. Used in tests.
 
 **Returns**
 

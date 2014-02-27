@@ -8,9 +8,9 @@ var di = (function () {
 
     /**
      * Register a new module using its constructor
-     * @param moduleName {string} modules name
-     * @param moduleConstructor {function} modules constructor
-     * @param dependencies {string[]} dependent module names
+     * @param {string} moduleName modules name
+     * @param {function} moduleConstructor  modules constructor
+     * @param {string[]} dependencies dependent module names
      */
     function register(moduleName, moduleConstructor, dependencies) {
         modules[moduleName] = {
@@ -29,7 +29,7 @@ var di = (function () {
 
     /**
      * Returns asked registered module constructor
-     * @param moduleName {string} module name
+     * @param {string} moduleName module name
      * @returns {function} modules constructor
      */
     function getConstructor(moduleName) {
@@ -49,7 +49,7 @@ var di = (function () {
 
     /**
      * Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one
-     * @param moduleName {string} module name
+     * @param {string} moduleName module name
      * @returns {object} module instance
      */
     function getInstance(moduleName) {
@@ -76,8 +76,8 @@ var di = (function () {
 
     /**
      * Return a new instance of asked module. It always creates a new instance.
-     * @param moduleName {string} module name
-     * @param dependency {...*} module dependencies (instances). For manual dependency resolving. Used in tests.
+     * @param {string} moduleName module name
+     * @param {...*} optional dependency module dependencies (instances). For manual dependency resolving. Used in tests.
      * @returns {object} module instance
      */
     function getNewInstance(moduleName) {
