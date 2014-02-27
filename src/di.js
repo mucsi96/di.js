@@ -1,14 +1,13 @@
 /*global getNewInstance*/
 /**
- * Simple Dependency Injector for module pattern modules. For instance creation it just executes the constructor
- * @module Dependency Injector
+ * @title Nano Dependency Injector
+ * @module di
  */
 var di = (function () {
     var modules = {};
 
     /**
      * Register a new module using its constructor
-     * @memberOf module:Dependency Injector
      * @param moduleName {string} modules name
      * @param moduleConstructor {function} modules constructor
      * @param dependencies {string[]} dependent module names
@@ -30,7 +29,6 @@ var di = (function () {
 
     /**
      * Returns asked registered module constructor
-     * @memberOf module:Dependency Injector
      * @param moduleName {string} module name
      * @returns {function} modules constructor
      */
@@ -44,7 +42,6 @@ var di = (function () {
 
     /**
      * Resets own state to initial. Forgets every registered module. Useful for testing.
-     * @memberOf module:Dependency Injector
      */
     function reset() {
         modules = {};
@@ -52,7 +49,6 @@ var di = (function () {
 
     /**
      * Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one
-     * @memberOf module:Dependency Injector
      * @param moduleName {string} module name
      * @returns {object} module instance
      */
@@ -80,7 +76,6 @@ var di = (function () {
 
     /**
      * Return a new instance of asked module. It always creates a new instance.
-     * @memberOf module:Dependency Injector
      * @param moduleName {string} module name
      * @param dependency {...*} module dependencies (instances). For manual dependency resolving. Used in tests.
      * @returns {object} module instance
