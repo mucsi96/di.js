@@ -1,3 +1,5 @@
-del di.md
-jsdox --output . src/di.js
-rename di.md README.md
+del README.md
+jsdox --output doc src/di.js
+
+
+copy doc/di.md README.md

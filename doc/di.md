@@ -59,4 +59,3 @@ Return a new instance of asked module. It always creates a new instance.
 
 *object*,  module instance
 
-
