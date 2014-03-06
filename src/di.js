@@ -1,4 +1,4 @@
-/*global getNewInstance*/
+/*global get*/
 /**
  * @title Nano Dependency Injector
  * @module di
@@ -35,6 +35,24 @@ var di = (function () {
         throw new Error("Constructor for module[" + moduleName + "] is not registered");
     }
 
+    function resolveDependencies(moduleName) {
+        var i,
+            moduleDependencies = getModule(moduleName).dependencies,
+            instances = [],
+            length = moduleDependencies ? moduleDependencies.length : 0;
+
+        for (i = 0; i < length; i += 1) {
+            instances.push(get(moduleDependencies[i]));
+        }
+
+        return instances;
+    }
+
+    function getNewInstance(moduleName) {
+        var constructor = getConstructor(moduleName);
+        return constructor.apply(this, resolveDependencies(moduleName));
+    }
+
     /**
      * Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one (if forceNew is not set to true)
      * @param {string} moduleName module name
@@ -50,31 +68,7 @@ var di = (function () {
         return module.instance;
     }
 
-    function resolveDependencies(moduleName) {
-        var i,
-            moduleDependencies = getModule(moduleName).dependencies,
-            instances = [],
-            length = moduleDependencies ? moduleDependencies.length : 0;
 
-        for (i = 0; i < length; i += 1) {
-            instances.push(get(moduleDependencies[i]));
-        }
-
-        return instances;
-    }
-
-    function getNewInstance(moduleName) {
-        var params,
-            constructor = getConstructor(moduleName);
-        Array.prototype.splice.call(arguments, 0, 1);
-        params = arguments;
-        if (constructor) {
-            if (params.length > 0) { //manual resolving. Used in tests
-                return constructor.apply(this, params);
-            }
-            return constructor.apply(this, resolveDependencies(moduleName));
-        }
-    }
 
     /**
      * Return a new instance of asked module. It always creates a new instance.
@@ -82,8 +76,10 @@ var di = (function () {
      * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving. Used in tests.
      * @returns {object} module instance
      */
-    function mockOver() {
-        return getNewInstance.apply(this, arguments);
+    function mockOver(moduleName) {
+        var constructor = getConstructor(moduleName);
+        Array.prototype.splice.call(arguments, 0, 1);
+        return constructor.apply(this, arguments);
     }
 
     return {

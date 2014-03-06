@@ -108,7 +108,28 @@ describe('DI module', function () {
             di.register('testModule', testModule);
             di.mockOver('testModule', 'A', 'B', 'C');
             expect(testModule).toHaveBeenCalledWith('A', 'B', 'C');
+        });
 
+        it('should not resolve dependencies automatically', function () {
+            var instance,
+                alma = function () {
+                    return 'Alma';
+                },
+                korte = function () {
+                    return 'Korte';
+                },
+                narancs = function (a, b) {
+                    return {
+                        getA: a,
+                        getB: b
+                    };
+                };
+            di.register('Alma', alma);
+            di.register('Korte', korte);
+            di.register('Narancs', narancs, ['Alma', 'Korte']);
+            instance = di.mockOver('Narancs');
+            expect(instance.getA).toBeUndefined();
+            expect(instance.getB).toBeUndefined();
         });
     });
 });
