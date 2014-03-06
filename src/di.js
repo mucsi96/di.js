@@ -27,11 +27,6 @@ var di = (function () {
         throw new Error("Module[" + moduleName + "] is not registered");
     }
 
-    /**
-     * Returns asked registered module constructor
-     * @param {string} moduleName module name
-     * @returns {function} modules constructor
-     */
     function getConstructor(moduleName) {
         var constructor = getModule(moduleName).constructor;
         if (constructor) {
@@ -41,20 +36,14 @@ var di = (function () {
     }
 
     /**
-     * Resets own state to initial. Forgets every registered module. Useful for testing.
-     */
-    function reset() {
-        modules = {};
-    }
-
-    /**
-     * Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one
+     * Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one (if forceNew is not set to true)
      * @param {string} moduleName module name
+     * @param {boolean} forceNew force creating new instance. By default it's false
      * @returns {object} module instance
      */
-    function getInstance(moduleName) {
+    function get(moduleName, forceNew) {
         var module = getModule(moduleName);
-        if (module.instance) {
+        if (!forceNew && module.instance) {
             return module.instance;
         }
         module.instance = getNewInstance(moduleName);
@@ -68,18 +57,12 @@ var di = (function () {
             length = moduleDependencies ? moduleDependencies.length : 0;
 
         for (i = 0; i < length; i += 1) {
-            instances.push(getInstance(moduleDependencies[i]));
+            instances.push(get(moduleDependencies[i]));
         }
 
         return instances;
     }
 
-    /**
-     * Return a new instance of asked module. It always creates a new instance.
-     * @param {string} moduleName module name
-     * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving. Used in tests.
-     * @returns {object} module instance
-     */
     function getNewInstance(moduleName) {
         var params,
             constructor = getConstructor(moduleName);
@@ -93,11 +76,19 @@ var di = (function () {
         }
     }
 
+    /**
+     * Return a new instance of asked module. It always creates a new instance.
+     * @param {string} moduleName module name
+     * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving. Used in tests.
+     * @returns {object} module instance
+     */
+    function mockOver() {
+        return getNewInstance.apply(this, arguments);
+    }
+
     return {
         register: register,
-        getConstructor: getConstructor,
-        reset: reset,
-        getInstance: getInstance,
-        getNewInstance: getNewInstance
+        get: get,
+        mockOver: mockOver
     };
 }());

@@ -13,39 +13,23 @@ Register a new module using its constructor
 
 **dependencies**:  *string[]*,  dependent module names
 
-di.getConstructor(moduleName)
------------------------------
-Returns asked registered module constructor
+di.get(moduleName, forceNew)
+----------------------------
+Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one (if forceNew is not set to true)
 
 
 **Parameters**
 
 **moduleName**:  *string*,  module name
 
-**Returns**
-
-*function*,  modules constructor
-
-di.reset()
-----------
-Resets own state to initial. Forgets every registered module. Useful for testing.
-
-
-di.getInstance(moduleName)
---------------------------
-Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one
-
-
-**Parameters**
-
-**moduleName**:  *string*,  module name
+**forceNew**:  *boolean*,  force creating new instance. By default it's false
 
 **Returns**
 
 *object*,  module instance
 
-di.getNewInstance(moduleName, \[dependencies...\])
---------------------------------------------------
+di.mockOver(moduleName, \[dependencies...\])
+--------------------------------------------
 Return a new instance of asked module. It always creates a new instance.
 
 
