@@ -48,9 +48,16 @@ var di = (function () {
         return instances;
     }
 
+    function create(constructor, argArray) {
+        var args = [null].concat(argArray),
+            Factory = constructor.bind.apply(constructor, args);
+        return new Factory();
+    }
+
     function getNewInstance(moduleName) {
-        var constructor = getConstructor(moduleName);
-        return constructor.apply(this, resolveDependencies(moduleName));
+        var constructor = getConstructor(moduleName),
+            dependencies = resolveDependencies(moduleName);
+        return create(constructor, dependencies);
     }
 
     /**

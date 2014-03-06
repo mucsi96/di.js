@@ -3,11 +3,13 @@ describe('DI module', function () {
 
     describe('register method', function () {
         it('should register modules', function () {
-            var testModule = function () {
-                return 'alma';
-            };
+            var instance,
+                testModule = function () {
+                    return {alma: 'alma'};
+                };
             di.register('testModule', testModule);
-            expect(di.get('testModule')).toEqual('alma');
+            instance = di.get('testModule');
+            expect(instance.alma).toEqual('alma');
         });
     });
 
@@ -52,10 +54,10 @@ describe('DI module', function () {
         it('should resolve dependencies', function () {
             var instance,
                 alma = function () {
-                    return 'Alma';
+                    return {name: 'Alma'};
                 },
                 korte = function () {
-                    return 'Korte';
+                    return {name: 'Korte'};
                 },
                 narancs = function (a, b) {
                     return {
@@ -67,14 +69,14 @@ describe('DI module', function () {
             di.register('Korte', korte);
             di.register('Narancs', narancs, ['Alma', 'Korte']);
             instance = di.get('Narancs');
-            expect(instance.getA).toEqual('Alma');
-            expect(instance.getB).toEqual('Korte');
+            expect(instance.getA.name).toEqual('Alma');
+            expect(instance.getB.name).toEqual('Korte');
         });
 
         it('should resolve second level dependencies', function () {
             var instance,
                 citrom = function () {
-                    return 'Citrom';
+                    return {name: 'Citrom'};
                 },
                 alma = function (g) {
                     return {
@@ -83,7 +85,7 @@ describe('DI module', function () {
                     };
                 },
                 korte = function () {
-                    return 'Korte';
+                    return {name: 'Korte'};
                 },
                 narancs = function (a, b) {
                     return {
@@ -97,8 +99,21 @@ describe('DI module', function () {
             di.register('Korte', korte);
             instance = di.get('Narancs');
             expect(instance.getA.getName).toEqual('Alma');
-            expect(instance.getA.getCitrom).toEqual('Citrom');
-            expect(instance.getB).toEqual('Korte');
+            expect(instance.getA.getCitrom.name).toEqual('Citrom');
+            expect(instance.getB.name).toEqual('Korte');
+        });
+
+        it('should create new instances using new keyword', function () {
+            var instance,
+                alma = function () {
+                    return undefined;
+                };
+            alma.prototype.fa = function () {
+                return 'almafa';
+            };
+            di.register('Alma', alma);
+            instance = di.get('Alma');
+            expect(instance.fa()).toEqual('almafa');
         });
     });
 
