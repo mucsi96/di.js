@@ -61,7 +61,7 @@ var di = (function () {
     }
 
     /**
-     * Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one (if forceNew is not set to true)
+     * Return an instance of asked module. If it is asked first time, it will create new instance and return in. If it was asked before, it will return the previous one (if forceNew is not set to true). Dependencies will be resolved automatically.
      * @param {string} moduleName module name
      * @param {boolean} forceNew force creating new instance. By default it's false
      * @returns {object} module instance
@@ -78,12 +78,12 @@ var di = (function () {
 
 
     /**
-     * Return a new instance of asked module. It always creates a new instance.
+     * Return a new instance of asked module by calling the constructor with given dependencies. Use for testing purposes
      * @param {string} moduleName module name
-     * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving. Used in tests.
+     * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving.
      * @returns {object} module instance
      */
-    function mockOver(moduleName) {
+    function mockAround(moduleName) {
         var constructor = getConstructor(moduleName);
         Array.prototype.splice.call(arguments, 0, 1);
         return constructor.apply(this, arguments);
@@ -92,6 +92,6 @@ var di = (function () {
     return {
         register: register,
         get: get,
-        mockOver: mockOver
+        mockAround: mockAround
     };
 }());

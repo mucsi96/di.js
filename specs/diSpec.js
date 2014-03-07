@@ -117,11 +117,11 @@ describe('DI module', function () {
         });
     });
 
-    describe('mockOver', function () {
+    describe('mockAround', function () {
         it('should pass all arguments to constructor', function () {
             var testModule = jasmine.createSpy();
             di.register('testModule', testModule);
-            di.mockOver('testModule', 'A', 'B', 'C');
+            di.mockAround('testModule', 'A', 'B', 'C');
             expect(testModule).toHaveBeenCalledWith('A', 'B', 'C');
         });
 
@@ -142,7 +142,7 @@ describe('DI module', function () {
             di.register('Alma', alma);
             di.register('Korte', korte);
             di.register('Narancs', narancs, ['Alma', 'Korte']);
-            instance = di.mockOver('Narancs');
+            instance = di.mockAround('Narancs');
             expect(instance.getA).toBeUndefined();
             expect(instance.getB).toBeUndefined();
         });
