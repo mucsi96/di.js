@@ -50,7 +50,7 @@ var di = (function () {
 
     function create(constructor, argArray) {
         var args = [null].concat(argArray),
-            Factory = constructor.bind.apply(constructor, args);
+            Factory = Function.prototype.bind.apply(constructor, args);
         return new Factory();
     }
 
