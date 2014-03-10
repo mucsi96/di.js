@@ -6,6 +6,12 @@
 var di = (function () {
     var modules = {};
 
+    /**
+     * Register a new module using its constructor
+     * @param {string} moduleName modules name
+     * @param {function} moduleConstructor  modules constructor
+     * @param {string[]} dependencies dependent module names
+     */
     function register(moduleName, moduleConstructor, dependencies) {
         modules[moduleName] = {
             constructor: moduleConstructor,
@@ -54,6 +60,13 @@ var di = (function () {
         return create(constructor, dependencies);
     }
 
+    /**
+     * Return an instance of asked module. If it is asked first time, it will create new instance and return in.
+     * If an instance already exists, it will return that instance back. (if forceNew is not set to true). Dependencies will be resolved automatically.
+     * @param {string} moduleName module name
+     * @param {boolean} forceNew force creating new instance. By default it's false
+     * @returns {object} module instance
+     */
     function get(moduleName, forceNew) {
         var module = getModule(moduleName);
         if (!forceNew && module.instance) {
@@ -63,6 +76,12 @@ var di = (function () {
         return module.instance;
     }
 
+    /**
+     * Return a new instance of asked module by calling the constructor with given dependencies. Use for testing purposes
+     * @param {string} moduleName module name
+     * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving.
+     * @returns {object} module instance
+     */
     function getCustomInstance(moduleName) {
         var module = getModule(moduleName),
             constructor = getConstructor(moduleName),
@@ -74,27 +93,8 @@ var di = (function () {
     }
 
     return {
-        /**
-         * Register a new module using its constructor
-         * @param {string} moduleName modules name
-         * @param {function} moduleConstructor  modules constructor
-         * @param {string[]} dependencies dependent module names
-         */
         register: register,
-        /**
-         * Return an instance of asked module. If it is asked first time, it will create new instance and return in.
-         * If an instance already exists, it will return that instance back. (if forceNew is not set to true). Dependencies will be resolved automatically.
-         * @param {string} moduleName module name
-         * @param {boolean} forceNew force creating new instance. By default it's false
-         * @returns {object} module instance
-         */
         get: get,
-        /**
-         * Return a new instance of asked module by calling the constructor with given dependencies. Use for testing purposes
-         * @param {string} moduleName module name
-         * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving.
-         * @returns {object} module instance
-         */
         getCustomInstance: getCustomInstance
     };
 }());
