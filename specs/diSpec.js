@@ -117,11 +117,11 @@ describe('DI module', function () {
         });
     });
 
-    describe('mockAround', function () {
+    describe('getCustomInstance', function () {
         it('should pass all arguments to constructor', function () {
             var testModule = jasmine.createSpy();
             di.register('testModule', testModule);
-            di.mockAround('testModule', 'A', 'B', 'C');
+            di.getCustomInstance('testModule', 'A', 'B', 'C');
             expect(testModule).toHaveBeenCalledWith('A', 'B', 'C');
         });
 
@@ -142,9 +142,30 @@ describe('DI module', function () {
             di.register('Alma', alma);
             di.register('Korte', korte);
             di.register('Narancs', narancs, ['Alma', 'Korte']);
-            instance = di.mockAround('Narancs');
-            expect(instance.getA).toBeUndefined();
-            expect(instance.getB).toBeUndefined();
+            instance = di.getCustomInstance('Narancs', 'citrom', 'barack');
+            expect(instance.getA).toEqual('citrom');
+            expect(instance.getB).toEqual('barack');
+        });
+
+        it('should throw exception if dependency is missing', function () {
+            var alma = function () {
+                    return 'Alma';
+                },
+                korte = function () {
+                    return 'Korte';
+                },
+                narancs = function (a, b) {
+                    return {
+                        getA: a,
+                        getB: b
+                    };
+                };
+            di.register('Alma', alma);
+            di.register('Korte', korte);
+            di.register('Narancs', narancs, ['Alma', 'Korte']);
+            expect(function () {
+                di.getCustomInstance('Narancs', alma);
+            }).toThrowError('Number of dependencies passed is not correct for module "Narancs". Passed 1. Expected: 2');
         });
     });
 });
