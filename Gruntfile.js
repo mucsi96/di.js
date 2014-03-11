@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 
-    var src = ['src/**/*.js'],
-        specs = ['specs/**/*.js'],
+    var src = ['src/**/*.js','example/**/*.js'],
+        specs = ['specs/**/*.js','example/**/*Spec.js'],
         all = src.concat(specs);
 
     grunt.initConfig(
