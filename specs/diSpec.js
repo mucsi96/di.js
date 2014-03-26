@@ -113,6 +113,7 @@ describe('DI module', function () {
             };
             di.register('Alma', alma);
             instance = di.get('Alma');
+            expect(instance).toBeDefined();
             expect(instance.fa()).toEqual('almafa');
         });
     });
@@ -166,6 +167,20 @@ describe('DI module', function () {
             expect(function () {
                 di.getCustomInstance('Narancs', alma);
             }).toThrowError('Number of dependencies passed is not correct for module "Narancs". Passed 1. Expected: 2');
+        });
+
+        it('should create new instances using new keyword', function () {
+            var instance,
+                alma = function () {
+                    return undefined;
+                };
+            alma.prototype.fa = function () {
+                return 'almafa';
+            };
+            di.register('Alma', alma);
+            instance = di.getCustomInstance('Alma');
+            expect(instance).toBeDefined();
+            expect(instance.fa()).toEqual('almafa');
         });
     });
 });

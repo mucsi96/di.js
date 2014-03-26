@@ -89,7 +89,7 @@ var di = (function () {
         if (module.dependencies && args.length !== module.dependencies.length) {
             throw new Error('Number of dependencies passed is not correct for module "' + moduleName + '". Passed ' + args.length + '. Expected: ' + module.dependencies.length);
         }
-        return constructor.apply(this, args);
+        return create(constructor, args);
     }
 
     return {
