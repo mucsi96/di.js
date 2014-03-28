@@ -103,16 +103,20 @@ describe('DI module', function () {
             expect(instance.getB.name).toEqual('Korte');
         });
 
-        it('should create new instances using new keyword', function () {
-            var instance,
-                alma = function () {
-                    return undefined;
+        it('should create new instances using new keyword', function () {            
+            var instance, klass,
+                wrapper = function(){
+                    var alma = function () {
+                        
+                    };
+                    alma.prototype.fa = function () {
+                        return 'almafa';
+                    };
+                    return alma;
                 };
-            alma.prototype.fa = function () {
-                return 'almafa';
-            };
-            di.register('Alma', alma);
-            instance = di.get('Alma');
+            di.register('Alma', wrapper);
+            klass = di.get('Alma');
+            instance = new klass();
             expect(instance).toBeDefined();
             expect(instance.fa()).toEqual('almafa');
         });
@@ -120,19 +124,20 @@ describe('DI module', function () {
 
     describe('getCustomInstance', function () {
         it('should pass all arguments to constructor', function () {
-            var testModule = jasmine.createSpy();
-            di.register('testModule', testModule);
-            di.getCustomInstance('testModule', 'A', 'B', 'C');
-            expect(testModule).toHaveBeenCalledWith('A', 'B', 'C');
-        });
-
+            
+            var testModule = jasmine.createSpy();            
+            di.register('testModule', testModule, ['A', 'B','C']);
+            di.getCustomInstance('testModule', 'A', 'B','C');
+            expect(testModule).toHaveBeenCalledWith('A', 'B','C');
+        });        
+           
         it('should not resolve dependencies automatically', function () {
             var instance,
                 alma = function () {
-                    return 'Alma';
+                    return 'Alma';                    
                 },
                 korte = function () {
-                    return 'Korte';
+                    return 'Korte';                 
                 },
                 narancs = function (a, b) {
                     return {
@@ -143,6 +148,7 @@ describe('DI module', function () {
             di.register('Alma', alma);
             di.register('Korte', korte);
             di.register('Narancs', narancs, ['Alma', 'Korte']);
+            
             instance = di.getCustomInstance('Narancs', 'citrom', 'barack');
             expect(instance.getA).toEqual('citrom');
             expect(instance.getB).toEqual('barack');
@@ -166,19 +172,22 @@ describe('DI module', function () {
             di.register('Narancs', narancs, ['Alma', 'Korte']);
             expect(function () {
                 di.getCustomInstance('Narancs', alma);
-            }).toThrowError('Number of dependencies passed is not correct for module "Narancs". Passed 1. Expected: 2');
+            }).toThrow();
         });
 
         it('should create new instances using new keyword', function () {
-            var instance,
-                alma = function () {
-                    return undefined;
+            var instance, klass,
+                wrapper = function(){
+                    alma = function () {                        
+                    };
+                    alma.prototype.fa = function () {
+                        return 'almafa';
+                    };
+                    return alma;
                 };
-            alma.prototype.fa = function () {
-                return 'almafa';
-            };
-            di.register('Alma', alma);
-            instance = di.getCustomInstance('Alma');
+            di.register('Alma', wrapper);
+            klass = di.getCustomInstance('Alma');
+            instance = new klass();
             expect(instance).toBeDefined();
             expect(instance.fa()).toEqual('almafa');
         });

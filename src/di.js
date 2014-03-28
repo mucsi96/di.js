@@ -6,17 +6,12 @@
 var di = (function () {
     var modules = {};
 
-    /**
-     * Register a new module using its constructor
-     * @param {string} moduleName modules name
-     * @param {function} moduleConstructor  modules constructor
-     * @param {string[]} dependencies dependent module names
-     */
-    function register(moduleName, moduleConstructor, dependencies) {
+    function register(moduleName, fn, dependencies) {
         modules[moduleName] = {
-            constructor: moduleConstructor,
-            dependencies: dependencies
+            orignFn: fn,
+            dependencies: dependencies || []
         };
+        return true;
     }
 
     function getModule(moduleName) {
@@ -27,74 +22,61 @@ var di = (function () {
         throw new Error('Module "' + moduleName + '" is not registered');
     }
 
-    function getConstructor(moduleName) {
-        var constructor = getModule(moduleName).constructor;
-        if (constructor) {
-            return constructor;
-        }
-        throw new Error('Constructor for module "' + moduleName + '" is not registered');
-    }
-
-    function resolveDependencies(moduleName) {
+    function resolveDependencies(moduleName, dependencies) {
         var i,
-            moduleDependencies = getModule(moduleName).dependencies,
-            instances = [],
-            length = moduleDependencies ? moduleDependencies.length : 0;
+            args = [],
+            module = getModule(moduleName),
+            len = dependencies.length;
 
-        for (i = 0; i < length; i += 1) {
-            instances.push(get(moduleDependencies[i]));
+        for(i = 0; i < len; i += 1){
+            args.push(get(dependencies[i]));
         }
-
-        return instances;
+        return module.orignFn.apply(module.orignFn, args);
     }
 
-    function create(constructor, argArray) {
-        var args = [null].concat(argArray),
-            Factory = Function.prototype.bind.apply(constructor, args);
-        return new Factory();
-    }
 
-    function getNewInstance(moduleName) {
-        var constructor = getConstructor(moduleName),
-            dependencies = resolveDependencies(moduleName);
-        return create(constructor, dependencies);
-    }
 
-    /**
-     * Return an instance of asked module. If it is asked first time, it will create new instance and return in.
-     * If an instance already exists, it will return that instance back. (if forceNew is not set to true). Dependencies will be resolved automatically.
-     * @param {string} moduleName module name
-     * @param {boolean} forceNew force creating new instance. By default it's false
-     * @returns {object} module instance
-     */
     function get(moduleName, forceNew) {
         var module = getModule(moduleName);
-        if (!forceNew && module.instance) {
-            return module.instance;
+        if (!forceNew && module.fn) {
+            return module.fn;
         }
-        module.instance = getNewInstance(moduleName);
-        return module.instance;
+        module.fn = resolveDependencies(moduleName, module.dependencies);
+        return module.fn;
     }
 
-    /**
-     * Return a new instance of asked module by calling the constructor with given dependencies. Use for testing purposes
-     * @param {string} moduleName module name
-     * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving.
-     * @returns {object} module instance
-     */
     function getCustomInstance(moduleName) {
         var module = getModule(moduleName),
-            constructor = getConstructor(moduleName),
-            args = Array.prototype.slice.call(arguments).slice(1);
-        if (module.dependencies && args.length !== module.dependencies.length) {
-            throw new Error('Number of dependencies passed is not correct for module "' + moduleName + '". Passed ' + args.length + '. Expected: ' + module.dependencies.length);
+            args = Array.prototype.slice.call(arguments, 1);
+
+        if(module.dependencies && module.dependencies.length !== args.length){
+            throw new Error('Number of dependencies passed is not correct for module "' + moduleName + '". Passed ' + args.length + '. Expected: ' + module.dependencies.length);  
         }
-        return create(constructor, args);
+        return module.orignFn.apply(module.orignFn, args);
     }
 
     return {
+        /**
+         * Register a new module using its constructor
+         * @param {string} moduleName modules name
+         * @param {function} moduleConstructor  modules constructor
+         * @param {string[]} dependencies dependent module names
+         */
         register: register,
+        /**
+         * Return an instance of asked module. If it is asked first time, it will create new instance and return in.
+         * If an instance already exists, it will return that instance unless forceNew is set to true. Dependencies will be resolved automatically.
+         * @param {string} moduleName module name
+         * @param {boolean} [forceNew=false] force creating new instance.
+         * @returns {object} module instance
+         */
         get: get,
+        /**
+         * Return a new instance of asked module by calling the constructor with given dependencies. Use for testing purposes
+         * @param {string} moduleName module name
+         * @param {object...} [dependencies...] module dependencies (instances). For manual dependency resolving.
+         * @returns {object} module instance
+         */
         getCustomInstance: getCustomInstance
     };
 }());
